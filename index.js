@@ -47,13 +47,13 @@ class RateLimitProxy {
 
 	async _execute(resolve, reject, method, args) {
 		const buildExecutor = id => {
-			const exec = (done, fail, attempts = 0) => {
-				const intercept = async data => {
-					if(typeof this._options.interceptor == 'function')
-						data = await this._options.interceptor(data);
-					return data;
-				}
+			const intercept = async data => {
+				if(typeof this._options.interceptor == 'function')
+					data = await this._options.interceptor(data);
+				return data;
+			}
 
+			const exec = (done, fail, attempts = 0) => {
 				const result = method.apply(this._obj, args);
 				if(typeof result != 'object' || typeof result.then != 'function')
 					return intercept(result).then(done); // non-promise handler, return resolved promise with value.
