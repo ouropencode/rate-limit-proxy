@@ -2,8 +2,18 @@
 ## Automagically proxy an object for rate-limit/retry functionality
 You give it an object, it'll wrap it up in a proxy and jiggle it all to be promise compatable. This proxy can then manage concurrency and retry on fail.
 
+## Installation:
+```
+npm install rate-limit-proxy --save
+```
+
+## Dependencies
+None
+
 ## Usage and options:
 ```js
+const RLP = require('rate-limit-proxy');
+
 const demoObject = {                    // our sample object we'll be working with.
   getVersion() {
     return "1.0.0";
