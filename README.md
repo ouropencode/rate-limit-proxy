@@ -30,7 +30,7 @@ const obj = RLP(demoObject, {
   retryMaxAttempts: 2,                  // maximum attempts of auto-retry
   retryInterval:    5000,               // how long we should wait before a retry
   returnHandler:    false,              // return the proxy control handler, instead of the proxied object
-	interceptor:      [AsyncFunction]     // a method to call that can modify the value of resolve data
+  interceptor:      [AsyncFunction]     // a method to call that can modify the value of resolve data
 });
 
 const version = await obj.getVersion(); // => "1.0.0"   - this became promise driven automatically
