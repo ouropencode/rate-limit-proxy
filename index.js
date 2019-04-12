@@ -8,6 +8,7 @@ class RateLimitProxy {
 			retryOnQueueFail: true,
 			retryMaxAttempts: 2,
 			retryInterval:    5000,
+			interceptor:      false,
 			returnHandler:    false,
 		  ...options
 		};
@@ -15,7 +16,6 @@ class RateLimitProxy {
 		this._proxy   = this._createProxy();
 		this._queue   = [];
 		this._nextId  = 0;
-
 		this._isRateLimitProxy = true;
 	}
 
@@ -48,19 +48,26 @@ class RateLimitProxy {
 	async _execute(resolve, reject, method, args) {
 		const buildExecutor = id => {
 			const exec = (done, fail, attempts = 0) => {
+				const intercept = async data => {
+					if(typeof this._options.interceptor == 'function')
+						data = await this._options.interceptor(data);
+					return data;
+				}
+
 				const result = method.apply(this._obj, args);
 				if(typeof result != 'object' || typeof result.then != 'function')
-					return done(result); // non-promise handler, return resolved promise with value.
+					return intercept(result).then(done); // non-promise handler, return resolved promise with value.
 
-				return result.then(done).catch(err => {
-					if(!this._options.retryOnQueueFail || attempts >= this._options.retryMaxAttempts)
-						return fail(err);
+				return result.then(data => intercept(data).then(done))
+					.catch(err => {
+						if(!this._options.retryOnQueueFail || attempts >= this._options.retryMaxAttempts)
+							return fail(err);
 
-					if(DEBUG) console.log("  " + id + ": failed, retrying");
-					setTimeout(() => {
-						exec(done, fail, attempts + 1);
-					}, this._options.retryInterval);
-				});
+						if(DEBUG) console.log("  " + id + ": failed, retrying");
+						setTimeout(() => {
+							exec(done, fail, attempts + 1);
+						}, this._options.retryInterval);
+					});
 			};
 
 			return () => new Promise(done => exec(
