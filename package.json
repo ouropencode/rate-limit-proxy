@@ -1,0 +1,29 @@
+{
+  "name": "rate-limit-proxy",
+  "version": "1.0.0",
+  "description": "Automagically proxy an object for rate-limit/retry functionality",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node tests/retryTestQueued.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ouropencode/rate-limit-proxy.git"
+  },
+  "keywords": [
+    "promise",
+    "rate",
+    "limit",
+    "retry",
+    "proxy"
+  ],
+  "author": "Peter Corcoran <peter@shadowacre.ltd>",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ouropencode/rate-limit-proxy/issues"
+  },
+  "homepage": "https://github.com/ouropencode/rate-limit-proxy#readme"
+}
